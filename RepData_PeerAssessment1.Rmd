@@ -1,0 +1,115 @@
+---
+title: "RepData_PeerAssessment1"
+author: "Kristophe"
+date: "9/9/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Loading the csv file to be used for analysis.
+
+```{r cars}
+#Checking the working directory
+getwd()
+
+library(readr)
+library(data.table)
+library(dplyr)
+library(knitr)
+library(ggplot2)
+library(ggthemes)
+library(Hmisc)
+
+#Loading the data
+activity=read.csv("activity/activity.csv")
+
+# Viewing the dataset
+View(activity)
+
+```
+
+Checking the structure of the data and observing some of the data
+
+```{r, echo=TRUE}
+# Observing the first 10 observations
+head(activity,10)
+
+# Observing the last 10 observations
+tail(activity,10)
+
+#Checking the structure of the data
+str(activity)
+
+# Changing the date format
+activity$date=as.Date(activity$date)
+
+str(activity)
+
+```
+
+Getting the total number of steps
+
+```{r}
+# Getting the total number of steps
+sum(activity$steps,na.rm=TRUE)
+
+```
+
+Plotting a histogram of the total number of steps taken per day
+```{r, fig.height=13,fig.width=13}
+hist(activity$steps,main = "Histogram of Total Number of Steps per Day",xlab = "Total Steps per day")
+
+```
+
+Getting the total mean and median of the total number of steps per day
+
+```{r}
+mean(activity$steps,na.rm = TRUE)
+
+median(activity$steps,na.rm = TRUE)
+
+```
+
+
+Making a time series plot of 5-minute interval (x-axis) and the average number of steps taken, averaged across all days (y-axis)
+
+```{r,fig.width=13,fig.height=13}
+plot(activity$interval,activity$steps,xlab="Number of Steps taken",ylab = "5-Minutes Interval",main="Time series Plot",type = "l")
+```
+
+Getting the number of missing values and replacing with the mean
+
+```{r}
+colSums(is.na(activity))
+
+for(i in 1:ncol(activity)){
+  activity[is.na(activity[,i]), i] <- mean(activity[,i], na.rm = TRUE)
+}
+
+colSums(is.na(activity))
+```
+
+Plotting a Histogram and Getting the mean and median
+
+```{r}
+hist(activity$steps,main = "Histogram of Total Number of Steps per Day",xlab = "Total Steps per day")
+
+```
+
+Checking if there are differences in activity patterns between weekdays and weekends
+
+```{r}
+
+activity$date <- ifelse(weekdays(activity$date) %in% c("Saturday", "Sunday"), "weekend", "weekday")
+```
+
+Plotting a time series plot
+
+```{r}
+
+xyplot(activity$steps~activity$interval|activity$date,data=activity,type="l")
+
+```
