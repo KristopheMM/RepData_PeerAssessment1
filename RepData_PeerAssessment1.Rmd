@@ -2,7 +2,10 @@
 title: "RepData_PeerAssessment1"
 author: "Kristophe"
 date: "9/9/2020"
-output: html_document
+output:
+  word_document: default
+  pdf_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
